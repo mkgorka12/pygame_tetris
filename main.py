@@ -49,12 +49,13 @@ author_rect = author_surf.get_rect(center = (screen.get_rect().centerx, screen.g
 continue_surf = SCORES_FONT.render("Press \'P\' to continue", True, "White")
 continue_rect = continue_surf.get_rect(center = (screen.get_rect().centerx, screen.get_rect().centery + 20))
 
-# player
+# player and ground
 ground_group = pygame.sprite.Group()
+player_group = pygame.sprite.GroupSingle()
+
 player = classes.Player(playArea_rect, ground_group)
 ground = classes.Ground(player)
 
-player_group = pygame.sprite.GroupSingle()
 player_group.add(player)
 
 # game loop
