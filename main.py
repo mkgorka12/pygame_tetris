@@ -74,7 +74,8 @@ while True:
 
                 break
 
-            player.updateOnEvent(event)
+            if not pause:
+                player.updateOnEvent(event)
     
     if pause:
         screen.fill("Black")
