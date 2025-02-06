@@ -1,7 +1,7 @@
 import pygame
 import constants
 from sys import exit
-import player_class
+import classes
 
 # pygame initialization
 pygame.init()
@@ -50,7 +50,9 @@ continue_surf = SCORES_FONT.render("Press \'P\' to continue", True, "White")
 continue_rect = continue_surf.get_rect(center = (screen.get_rect().centerx, screen.get_rect().centery + 20))
 
 # player
-player = player_class.Player(playArea_rect)
+ground_group = pygame.sprite.Group()
+player = classes.Player(playArea_rect, ground_group)
+ground = classes.Ground(player)
 
 player_group = pygame.sprite.GroupSingle()
 player_group.add(player)
@@ -97,6 +99,9 @@ while True:
 
         player_group.draw(screen)
         player_group.update()
+
+        ground_group.draw(screen)
+        ground_group.update()
 
     pygame.display.flip()
     clock.tick(60)
