@@ -54,16 +54,13 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.image.load(f"graphics/{self.shape}.png").convert_alpha()
         self.rect = self.image.get_rect(topright = (self.playArea.centerx, self.playArea.top))
 
-        # add to group
-        # should there be a line: self.mask = pygame.mask.from_surface(self.image) ?
-
     def updateOnEvent(self, event: pygame.event.Event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT and self.rect.left - constants.CRATE_LEN > self.playArea.left:
                 self.rect.x -= constants.CRATE_LEN
             elif event.key == pygame.K_RIGHT and self.rect.right + constants.CRATE_LEN < self.playArea.right:
                 self.rect.x += constants.CRATE_LEN
-            elif event.key == pygame.K_c and self.can_hold:
+            elif event.key == pygame.K_c and self.can_hold: # HOLD
                 self.can_hold = False
 
                 temp = self.shape
@@ -77,9 +74,21 @@ class Player(pygame.sprite.Sprite):
 
                 self.holded_image = pygame.image.load(f"graphics/{self.holded}.png").convert_alpha()
                 self.holded_rect = self.holded_image.get_rect(center = constants.HOLD_COORDINATES)
-            elif event.key == pygame.K_SPACE:
+            elif event.key == pygame.K_SPACE: # DROP
                 self.rect.bottom = self.playArea.bottom
                 self.spawnNew(self.nextShape, False)
+            elif event.key == pygame.K_UP: # ROTATE COUNTER CLOCKWISE
+                self.image = pygame.transform.rotate(self.image, -90).convert_alpha()
+                self.rect = self.image.get_rect(topleft = (self.rect.x, self.rect.y))
+
+                if self.rect.right > self.playArea.right:
+                    self.rect = self.image.get_rect(topright = (self.playArea.right - 1, self.rect.y))
+            elif event.key == pygame.K_z: # ROTATE CLOCKWISE
+                self.image = pygame.transform.rotate(self.image, 90).convert_alpha()
+                self.rect = self.image.get_rect(topright = (self.rect.right, self.rect.y))
+
+                if self.rect.left < self.playArea.left:
+                    self.rect = self.image.get_rect(topleft = (self.playArea.left + 1, self.rect.y))
 
             self.mask = pygame.mask.from_surface(self.image)
 
