@@ -18,7 +18,7 @@ playArea_rect = playArea_surf.get_rect(center = screen.get_rect().center)
 ground_group = classes.Ground(playArea_rect)
 
 # player
-player_group = classes.Player(playArea_rect, ground_group, "T")
+player_group = classes.Player(playArea_rect, ground_group)
 
 # game loop
 while True:
