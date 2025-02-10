@@ -1,17 +1,18 @@
 import pygame
 import constants
+
 from random import choice
 from time import time
 import math
 
 class Block(pygame.sprite.Sprite):
-    def __init__(self, playArea: pygame.Rect, coords: tuple[int, int], color: str):
+    def __init__(self, background: pygame.Rect, color: str, coords = (0, 0)):
         super().__init__()
         
-        self.image = pygame.surface.Surface((constants.CRATE_LEN, constants.CRATE_LEN))
+        self.image = pygame.surface.Surface((constants.CRATE_LEN, constants.CRATE_LEN)).convert()
         self.image.fill(color=color)
         
-        coords = (playArea.left + 1 + (coords[0] * constants.CRATE_LEN), playArea.top + 1 + (coords[1] * constants.CRATE_LEN))
+        coords = (background.left + 1 + (coords[0] * constants.CRATE_LEN), background.top + 1 + (coords[1] * constants.CRATE_LEN))
         self.rect = self.image.get_rect(topleft = coords)
 
 class Shape(pygame.sprite.Group):
@@ -22,7 +23,7 @@ class Shape(pygame.sprite.Group):
         self.shape = shape if shape != None else choice(list(constants.SHAPES_COLORS))
 
         for i in range(4):
-            self.add(Block(playArea, constants.SHAPES_COORDS[self.shape][i], constants.SHAPES_COLORS[self.shape]))
+            self.add(Block(playArea, constants.SHAPES_COLORS[self.shape], constants.SHAPES_COORDS[self.shape][i]))
 
 class Player(Shape):
     def __init__(self, playArea: pygame.Rect, ground_group: pygame.sprite.Group):
@@ -48,7 +49,7 @@ class Player(Shape):
             self.nextShape = choice([shape for shape in constants.SHAPES_COLORS.keys() if shape is not self.shape])
 
             for i in range(4):    
-                self.add(Block(self.playArea, constants.SHAPES_COORDS[self.shape][i], constants.SHAPES_COLORS[self.shape]))
+                self.add(Block(self.playArea, constants.SHAPES_COLORS[self.shape], constants.SHAPES_COORDS[self.shape][i]))
 
             self.canHold = True
             self.ground_group.update()
@@ -66,7 +67,7 @@ class Player(Shape):
                 self.nextShape = choice([shape for shape in constants.SHAPES_COLORS.keys() if shape is not self.shape])
 
             for i in range(4):    
-                self.add(Block(self.playArea, constants.SHAPES_COORDS[self.shape][i], constants.SHAPES_COLORS[self.shape]))
+                self.add(Block(self.playArea, constants.SHAPES_COLORS[self.shape], constants.SHAPES_COORDS[self.shape][i]))
 
             self.canHold = False
         
@@ -154,6 +155,7 @@ class Player(Shape):
         if self.canHold:
             self.spawn(True)
 
+    # returns game over flag
     def updateOnEvent(self, event: pygame.event.Event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
@@ -169,9 +171,20 @@ class Player(Shape):
             elif event.key == pygame.K_c:
                 self.hold()
 
+        if self.collision(0, 0):
+            return True
+        else:
+            return False
+
+    # returns game over flag
     def update(self):
         self.softDrop()
         self.fall()
+
+        if self.collision(0, 0):
+            return True
+        else:
+            return False
 
 class Ground(pygame.sprite.Group):
     def __init__(self, playArea: pygame.Rect):
@@ -179,7 +192,7 @@ class Ground(pygame.sprite.Group):
         self.playArea = playArea
 
     def update(self):
-        colisionBlock = Block(self.playArea, (0, 0), "Black")
+        colisionBlock = Block(self.playArea, "Black")
         
         for i in range(constants.ROWS):
             colisionBlock.rect.x = self.playArea.left + 1
