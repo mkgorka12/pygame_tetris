@@ -38,6 +38,33 @@ nextShape_rect = nextShape_surf.get_rect(topleft = (playArea_rect.right + 30, pl
 holded_surf = pygame.surface.Surface((160, 160)).convert()
 holded_rect = holded_surf.get_rect(topright = (playArea_rect.left - 30, playArea_rect.top + 1))
 
+# font
+robotoMono = pygame.font.Font("fonts/RobotoMono.ttf", 30)
+
+# score
+score_surf = robotoMono.render("Score:", True, "White")
+score_rect = score_surf.get_rect(topright = (playArea_rect.left - 50, playArea_rect.bottom - 321))
+
+# level
+level_surf = robotoMono.render("Level:", True, "White")
+level_rect = level_surf.get_rect(topright = (playArea_rect.left - 50, playArea_rect.bottom - 231))
+
+# lines
+lines_surf = robotoMono.render("Lines:", True, "White")
+lines_rect = lines_surf.get_rect(topright = (playArea_rect.left - 50, playArea_rect.bottom - 141))
+
+def updateScores(player: classes.Player, ground: classes.Ground):
+    score_surf = robotoMono.render(f"{player.score}", True, "White")
+    score_rect = score_surf.get_rect(topright = (playArea_rect.left - 50, playArea_rect.bottom - 281))
+
+    level_surf = robotoMono.render(f"{player.level}", True, "White")
+    level_rect = level_surf.get_rect(topright = (playArea_rect.left - 50, playArea_rect.bottom - 191))
+
+    lines_surf = robotoMono.render(f"{ground.lines}", True, "White")
+    lines_rect = lines_surf.get_rect(topright = (playArea_rect.left - 50, playArea_rect.bottom - 101))
+
+    return [[score_surf, score_rect], [level_surf, level_rect], [lines_surf, lines_rect]]
+
 # game loop
 while True:
     for event in pygame.event.get():
@@ -56,8 +83,19 @@ while True:
     elif gameOver:
         screen.blit(gameOver_surf, gameOver_rect)
     else:
+        scores = updateScores(player_group, ground_group)
+
         screen.fill(constants.BACKCOLOUR)
         screen.blit(playArea_surf, playArea_rect)
+
+        screen.blit(score_surf, score_rect)
+        screen.blit(scores[0][0], scores[0][1])
+
+        screen.blit(level_surf, level_rect)
+        screen.blit(scores[1][0], scores[1][1])
+
+        screen.blit(lines_surf, lines_rect)
+        screen.blit(scores[2][0], scores[2][1])
         
         screen.blit(nextShape_surf, nextShape_rect)
         nextShape = classes.Shape(nextShape_rect, player_group.nextShape)

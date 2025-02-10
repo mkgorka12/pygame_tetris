@@ -25,13 +25,48 @@ class Shape(pygame.sprite.Group):
         for i in range(4):
             self.add(Block(playArea, constants.SHAPES_COLORS[self.shape], constants.SHAPES_COORDS[self.shape][i]))
 
+class Ground(pygame.sprite.Group):
+    def __init__(self, playArea: pygame.Rect):
+        super().__init__()
+        self.playArea = playArea
+
+        self.lines = 0
+
+    def update(self):
+        colisionBlock = Block(self.playArea, "Black")
+        
+        for i in range(constants.ROWS):
+            colisionBlock.rect.x = self.playArea.left + 1
+            toClear = True
+
+            for j in range(constants.COLUMNS):
+                if pygame.sprite.spritecollideany(colisionBlock, self) == None:
+                    toClear = False
+                    break
+
+                colisionBlock.rect.x += constants.CRATE_LEN
+            
+            colisionBlock.rect.y += constants.CRATE_LEN
+
+            if toClear:
+                self.lines += 1
+
+                for block in self:
+                    if block.rect.bottom == self.playArea.top + 1 + ((i + 1) * constants.CRATE_LEN):
+                        self.remove(block)
+
+                for block in self:
+                    if block.rect.bottom <= self.playArea.top + 1 + (i * constants.CRATE_LEN):
+                        block.rect.y += constants.CRATE_LEN
+
 class Player(Shape):
-    def __init__(self, playArea: pygame.Rect, ground_group: pygame.sprite.Group):
+    def __init__(self, playArea: pygame.Rect, ground_group: Ground):
         super().__init__(playArea)
         
         self.ground_group = ground_group
 
         self.lastFallTime = time()
+        self.score = 0
         self.level = 1
 
         self.nextShape = choice([shape for shape in constants.SHAPES_COLORS if shape != self.shape])
@@ -52,7 +87,18 @@ class Player(Shape):
                 self.add(Block(self.playArea, constants.SHAPES_COLORS[self.shape], constants.SHAPES_COORDS[self.shape][i]))
 
             self.canHold = True
+
+            lastLines = self.ground_group.lines
             self.ground_group.update()
+
+            if (self.ground_group.lines - lastLines) % 4 == 0 and self.ground_group.lines != 0:
+                self.score += 1000
+            elif (self.ground_group.lines - lastLines) != 0 and self.ground_group.lines != 0:
+                self.score += (self.ground_group.lines - lastLines) * 250
+            else:
+                self.score += 100
+
+            self.level = (self.score // 25000) + 1
         else:
             for block in self:
                 self.remove(block)
@@ -185,33 +231,3 @@ class Player(Shape):
             return True
         else:
             return False
-
-class Ground(pygame.sprite.Group):
-    def __init__(self, playArea: pygame.Rect):
-        super().__init__()
-        self.playArea = playArea
-
-    def update(self):
-        colisionBlock = Block(self.playArea, "Black")
-        
-        for i in range(constants.ROWS):
-            colisionBlock.rect.x = self.playArea.left + 1
-            toClear = True
-
-            for j in range(constants.COLUMNS):
-                if pygame.sprite.spritecollideany(colisionBlock, self) == None:
-                    toClear = False
-                    break
-
-                colisionBlock.rect.x += constants.CRATE_LEN
-            
-            colisionBlock.rect.y += constants.CRATE_LEN
-
-            if toClear:
-                for block in self:
-                    if block.rect.bottom == self.playArea.top + 1 + ((i + 1) * constants.CRATE_LEN):
-                        self.remove(block)
-
-                for block in self:
-                    if block.rect.bottom <= self.playArea.top + 1 + (i * constants.CRATE_LEN):
-                        block.rect.y += constants.CRATE_LEN
