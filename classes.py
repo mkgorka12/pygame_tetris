@@ -33,12 +33,15 @@ class Player(Shape):
         self.lastFallTime = time()
         self.level = 1
 
+        self.nextShape = choice([shape for shape in constants.SHAPES_COLORS if shape != self.shape])
+
     def spawn(self):
         for block in self:
             self.remove(block)
             self.ground_group.add(block)
 
-        self.shape = choice([shape for shape in constants.SHAPES_COLORS.keys() if shape is not self.shape])
+        self.shape = self.nextShape
+        self.nextShape = choice([shape for shape in constants.SHAPES_COLORS.keys() if shape is not self.shape])
 
         for i in range(4):    
             self.add(Block(self.playArea, constants.SHAPES_COORDS[self.shape][i], constants.SHAPES_COLORS[self.shape]))
