@@ -98,12 +98,12 @@ while True:
         screen.blit(scores[2][0], scores[2][1])
         
         screen.blit(nextShape_surf, nextShape_rect)
-        nextShape = classes.Shape(nextShape_rect, player_group.nextShape)
+        nextShape = classes.Shape(nextShape_rect, size=20, shape=player_group.nextShape)
         nextShape.draw(screen)
 
         screen.blit(holded_surf, holded_rect)
         if player_group.holded != None:
-            holded = classes.Shape(holded_rect, player_group.holded)
+            holded = classes.Shape(holded_rect, size=20, shape=player_group.holded)
             holded.draw(screen)
 
         player_group.draw(screen)

@@ -6,24 +6,24 @@ from time import time
 import math
 
 class Block(pygame.sprite.Sprite):
-    def __init__(self, background: pygame.Rect, color: str, coords = (0, 0)):
+    def __init__(self, coords: tuple[int, int], size: int, color = "Black"):
         super().__init__()
         
-        self.image = pygame.surface.Surface((constants.CRATE_LEN, constants.CRATE_LEN)).convert()
+        self.image = pygame.surface.Surface((size, size)).convert()
         self.image.fill(color=color)
         
-        coords = (background.left + 1 + (coords[0] * constants.CRATE_LEN), background.top + 1 + (coords[1] * constants.CRATE_LEN))
         self.rect = self.image.get_rect(topleft = coords)
 
 class Shape(pygame.sprite.Group):
-    def __init__(self, playArea: pygame.Rect, shape = None):
+    def __init__(self, playArea: pygame.Rect, size = constants.CRATE_LEN, shape = None):
         super().__init__(self)
 
         self.playArea = playArea
         self.shape = shape if shape != None else choice(list(constants.SHAPES_COLORS))
 
         for i in range(4):
-            self.add(Block(playArea, constants.SHAPES_COLORS[self.shape], constants.SHAPES_COORDS[self.shape][i]))
+            coords = (playArea.left + 1 + (constants.SHAPES_COORDS[self.shape][i][0] * constants.CRATE_LEN), playArea.top + 1 + (constants.SHAPES_COORDS[self.shape][i][1] * constants.CRATE_LEN))
+            self.add(Block(coords, size, constants.SHAPES_COLORS[self.shape]))
 
 class Ground(pygame.sprite.Group):
     def __init__(self, playArea: pygame.Rect):
@@ -33,7 +33,7 @@ class Ground(pygame.sprite.Group):
         self.lines = 0
 
     def update(self):
-        colisionBlock = Block(self.playArea, "Black")
+        colisionBlock = Block((self.playArea.left + 1, self.playArea.top + 1), constants.CRATE_LEN)
         
         for i in range(constants.ROWS):
             colisionBlock.rect.x = self.playArea.left + 1
@@ -84,7 +84,8 @@ class Player(Shape):
             self.nextShape = choice([shape for shape in constants.SHAPES_COLORS.keys() if shape is not self.shape])
 
             for i in range(4):    
-                self.add(Block(self.playArea, constants.SHAPES_COLORS[self.shape], constants.SHAPES_COORDS[self.shape][i]))
+                coords = (self.playArea.left + 1 + (constants.SHAPES_COORDS[self.shape][i][0] * constants.CRATE_LEN), self.playArea.top + 1 + (constants.SHAPES_COORDS[self.shape][i][1] * constants.CRATE_LEN))
+                self.add(Block(coords, constants.CRATE_LEN, constants.SHAPES_COLORS[self.shape]))
 
             self.canHold = True
 
@@ -113,7 +114,8 @@ class Player(Shape):
                 self.nextShape = choice([shape for shape in constants.SHAPES_COLORS.keys() if shape is not self.shape])
 
             for i in range(4):    
-                self.add(Block(self.playArea, constants.SHAPES_COLORS[self.shape], constants.SHAPES_COORDS[self.shape][i]))
+                coords = (self.playArea.left + 1 + (constants.SHAPES_COORDS[self.shape][i][0] * constants.CRATE_LEN), self.playArea.top + 1 + (constants.SHAPES_COORDS[self.shape][i][1] * constants.CRATE_LEN))
+                self.add(Block(coords, constants.CRATE_LEN, constants.SHAPES_COLORS[self.shape]))
 
             self.canHold = False
         
