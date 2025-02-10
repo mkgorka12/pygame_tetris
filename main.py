@@ -21,7 +21,8 @@ pause_surf = pygame.image.load("graphics/pause.png").convert()
 pause_rect = screen.get_rect()
 
 # play area
-playArea_surf = pygame.image.load("graphics/grid.png").convert()
+playArea_surf = pygame.surface.Surface((constants.PLAYAREA_WIDTH, constants.PLAYAREA_HEIGHT)).convert()
+playArea_surf.fill("Black")
 playArea_rect = playArea_surf.get_rect(center = screen.get_rect().center)
 
 # ground
@@ -98,12 +99,12 @@ while True:
         screen.blit(scores[2][0], scores[2][1])
         
         screen.blit(nextShape_surf, nextShape_rect)
-        nextShape = classes.Shape(nextShape_rect, size=20, shape=player_group.nextShape)
+        nextShape = classes.Shape((nextShape_rect.left + 50, nextShape_rect.top + 60), size=20, shape=player_group.nextShape)
         nextShape.draw(screen)
 
         screen.blit(holded_surf, holded_rect)
         if player_group.holded != None:
-            holded = classes.Shape(holded_rect, size=20, shape=player_group.holded)
+            holded = classes.Shape((holded_rect.left + 50, holded_rect.top + 60), size=20, shape=player_group.holded)
             holded.draw(screen)
 
         player_group.draw(screen)

@@ -6,7 +6,7 @@ RobotoMono.ttf source: https://fonts.google.com/specimen/Roboto+Mono
 
 To do:
 - highscore
-- Shape class needs to be modified (it's pretty useless right now)
+- restart
+
 - Improve graphics
 - add audio
-- restart

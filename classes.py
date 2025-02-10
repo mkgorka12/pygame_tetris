@@ -15,21 +15,19 @@ class Block(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = coords)
 
 class Shape(pygame.sprite.Group):
-    def __init__(self, playArea: pygame.Rect, size = constants.CRATE_LEN, shape = None):
+    def __init__(self, offset: tuple[int, int], size: int, shape = None):
         super().__init__(self)
 
-        self.playArea = playArea
-        self.shape = shape if shape != None else choice(list(constants.SHAPES_COLORS))
+        self.shape = shape if shape != None else choice(list(constants.SHAPES))
 
         for i in range(4):
-            coords = (playArea.left + 1 + (constants.SHAPES_COORDS[self.shape][i][0] * constants.CRATE_LEN), playArea.top + 1 + (constants.SHAPES_COORDS[self.shape][i][1] * constants.CRATE_LEN))
-            self.add(Block(coords, size, constants.SHAPES_COLORS[self.shape]))
+            coords = (offset[0] + (constants.SHAPES[self.shape][i][0] * size), offset[1] + (constants.SHAPES[self.shape][i][1] * size))
+            self.add(Block(coords, size, self.shape))
 
 class Ground(pygame.sprite.Group):
     def __init__(self, playArea: pygame.Rect):
         super().__init__()
         self.playArea = playArea
-
         self.lines = 0
 
     def update(self):
@@ -61,7 +59,9 @@ class Ground(pygame.sprite.Group):
 
 class Player(Shape):
     def __init__(self, playArea: pygame.Rect, ground_group: Ground):
-        super().__init__(playArea)
+        super().__init__((playArea.left + (3 * constants.CRATE_LEN) + 1, playArea.top + 1), constants.CRATE_LEN)
+
+        self.playArea = playArea
         
         self.ground_group = ground_group
 
@@ -69,7 +69,7 @@ class Player(Shape):
         self.score = 0
         self.level = 1
 
-        self.nextShape = choice([shape for shape in constants.SHAPES_COLORS if shape != self.shape])
+        self.nextShape = choice([shape for shape in constants.SHAPES if shape != self.shape])
 
         self.canHold = True
         self.holded = None
@@ -81,11 +81,11 @@ class Player(Shape):
                 self.ground_group.add(block)
 
             self.shape = self.nextShape
-            self.nextShape = choice([shape for shape in constants.SHAPES_COLORS.keys() if shape is not self.shape])
+            self.nextShape = choice([shape for shape in constants.SHAPES if shape is not self.shape])
 
             for i in range(4):    
-                coords = (self.playArea.left + 1 + (constants.SHAPES_COORDS[self.shape][i][0] * constants.CRATE_LEN), self.playArea.top + 1 + (constants.SHAPES_COORDS[self.shape][i][1] * constants.CRATE_LEN))
-                self.add(Block(coords, constants.CRATE_LEN, constants.SHAPES_COLORS[self.shape]))
+                coords = (self.playArea.left + (3 * constants.CRATE_LEN) + 1 + (constants.SHAPES[self.shape][i][0] * constants.CRATE_LEN), self.playArea.top + 1 + (constants.SHAPES[self.shape][i][1] * constants.CRATE_LEN))
+                self.add(Block(coords, constants.CRATE_LEN, self.shape))
 
             self.canHold = True
 
@@ -111,11 +111,11 @@ class Player(Shape):
             else: 
                 self.holded = self.shape
                 self.shape = self.nextShape
-                self.nextShape = choice([shape for shape in constants.SHAPES_COLORS.keys() if shape is not self.shape])
+                self.nextShape = choice([shape for shape in constants.SHAPES if shape is not self.shape])
 
             for i in range(4):    
-                coords = (self.playArea.left + 1 + (constants.SHAPES_COORDS[self.shape][i][0] * constants.CRATE_LEN), self.playArea.top + 1 + (constants.SHAPES_COORDS[self.shape][i][1] * constants.CRATE_LEN))
-                self.add(Block(coords, constants.CRATE_LEN, constants.SHAPES_COLORS[self.shape]))
+                coords = (self.playArea.left + (3 * constants.CRATE_LEN) + 1 + (constants.SHAPES[self.shape][i][0] * constants.CRATE_LEN), self.playArea.top + 1 + (constants.SHAPES[self.shape][i][1] * constants.CRATE_LEN))
+                self.add(Block(coords, constants.CRATE_LEN, self.shape))
 
             self.canHold = False
         
@@ -180,7 +180,7 @@ class Player(Shape):
             self.lastFallTime = time()
 
     def rotate(self, clockwise: bool):
-        if self.shape != 'O':
+        if self.shape != "Yellow":
             angle = math.radians(-90 if clockwise else 90)
 
             centerX = self.sprites()[0].rect.centerx
