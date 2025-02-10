@@ -15,7 +15,7 @@ playArea_surf = pygame.image.load("graphics/grid.png").convert()
 playArea_rect = playArea_surf.get_rect(center = screen.get_rect().center)
 
 # ground
-ground_group = pygame.sprite.Group()
+ground_group = classes.Ground(playArea_rect)
 
 # player
 player_group = classes.Player(playArea_rect, ground_group, "T")
@@ -36,7 +36,6 @@ while True:
     player_group.update()
 
     ground_group.draw(screen)
-    ground_group.update()
 
     pygame.display.flip()
     clock.tick(60)
