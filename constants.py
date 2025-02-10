@@ -5,7 +5,23 @@ BACKCOLOUR = "#3b3b3b"
 
 CRATE_LEN = 35
 
-SHAPES = ['I', 'J', 'L', 'O', 'S', 'T', 'Z']
+COLUMNS = 10
+ROWS = 20
 
-NEXTSHAPE_COORDINATES = (600, 175)
-HOLD_COORDINATES = (600, 435)
+CAPTION = "mkgorka's Tetris"
+
+SHAPES_COORDS = {'O': [(4, 0), (5, 0), (4, 1), (5, 1)],
+                 'I': [(3, 0), (4, 0), (5, 0), (6, 0)],
+                 'S': [(4, 0), (5, 0), (3, 1), (4, 1)],
+                 'Z': [(3, 0), (4, 0), (4, 1), (5, 1)],
+                 'L': [(3, 1), (4, 1), (5, 1), (5, 0)],
+                 'J': [(3, 0), (3, 1), (4, 1), (5, 1)],
+                 'T': [(4, 0), (3, 1), (4, 1), (5, 1)]}
+
+SHAPES_COLORS = {'O': "Yellow",
+                 'I': "Cyan",
+                 'S': "Red",
+                 'Z': "Green",
+                 'L': "Orange",
+                 'J': "Blue",
+                 'T': "Purple"}
