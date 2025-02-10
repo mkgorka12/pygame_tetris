@@ -77,7 +77,18 @@ while True:
             pause = True if pause == False else False
         
         if player_group.updateOnEvent(event):
-            gameOver = True  
+            gameOver = True 
+
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
+            pause = False
+            gameOver = False
+
+            for sprite in ground_group:
+                sprite.kill()
+
+            player_group.score = 0
+            player_group.level = 1
+            ground_group.lines = 0
     
     if pause:
         screen.blit(pause_surf, pause_rect)

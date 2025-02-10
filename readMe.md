@@ -6,7 +6,8 @@ RobotoMono.ttf source: https://fonts.google.com/specimen/Roboto+Mono
 
 To do:
 - highscore
-- restart
+- improve rotation
 
+- add description on GitHub
 - Improve graphics
 - add audio
