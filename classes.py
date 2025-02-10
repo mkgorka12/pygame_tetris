@@ -2,6 +2,7 @@ import pygame
 import constants
 from random import choice
 from time import time
+import math
 
 class Block(pygame.sprite.Sprite):
     def __init__(self, playArea: pygame.Rect, coords: tuple[int, int], color: str):
@@ -97,7 +98,24 @@ class Player(pygame.sprite.Group):
             self.lastFallTime = time()
 
     def rotate(self, clockwise: bool):
-        pass
+        if self.shape != 'O':
+            angle = math.radians(-90 if clockwise else 90)
+
+            centerX = self.sprites()[0].rect.centerx
+            centerY = self.sprites()[0].rect.centery
+
+            for block in self:
+                relative_x = block.rect.centerx - centerX
+                relative_y = block.rect.centery - centerY
+
+                new_x = relative_x * math.cos(angle) - relative_y * math.sin(angle)
+                new_y = relative_x * math.sin(angle) + relative_y * math.cos(angle)
+
+                block.rect.centerx = centerX + new_x
+                block.rect.centery = centerY + new_y
+
+            if self.collision(0, 0):
+                self.rotate(False if clockwise else True)
 
     def hold(self):
         pass
