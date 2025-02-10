@@ -35,18 +35,40 @@ class Player(Shape):
 
         self.nextShape = choice([shape for shape in constants.SHAPES_COLORS if shape != self.shape])
 
-    def spawn(self):
-        for block in self:
-            self.remove(block)
-            self.ground_group.add(block)
+        self.canHold = True
+        self.holded = None
 
-        self.shape = self.nextShape
-        self.nextShape = choice([shape for shape in constants.SHAPES_COLORS.keys() if shape is not self.shape])
+    def spawn(self, calledByHold: bool):
+        if not calledByHold:
+            for block in self:
+                self.remove(block)
+                self.ground_group.add(block)
 
-        for i in range(4):    
-            self.add(Block(self.playArea, constants.SHAPES_COORDS[self.shape][i], constants.SHAPES_COLORS[self.shape]))
+            self.shape = self.nextShape
+            self.nextShape = choice([shape for shape in constants.SHAPES_COLORS.keys() if shape is not self.shape])
 
-        self.ground_group.update()
+            for i in range(4):    
+                self.add(Block(self.playArea, constants.SHAPES_COORDS[self.shape][i], constants.SHAPES_COLORS[self.shape]))
+
+            self.canHold = True
+            self.ground_group.update()
+        else:
+            for block in self:
+                self.remove(block)
+
+            if self.holded != None:
+                temp = self.shape
+                self.shape = self.holded
+                self.holded = temp
+            else: 
+                self.holded = self.shape
+                self.shape = self.nextShape
+                self.nextShape = choice([shape for shape in constants.SHAPES_COLORS.keys() if shape is not self.shape])
+
+            for i in range(4):    
+                self.add(Block(self.playArea, constants.SHAPES_COORDS[self.shape][i], constants.SHAPES_COLORS[self.shape]))
+
+            self.canHold = False
         
     # little goofy
     def collision(self, offsetX: int, offsetY: int):
@@ -86,7 +108,7 @@ class Player(Shape):
             for block in self:
                 block.rect.y += constants.CRATE_LEN
 
-        self.spawn()
+        self.spawn(False)
 
     def softDrop(self):
         keys = pygame.key.get_pressed()
@@ -96,12 +118,12 @@ class Player(Shape):
                 for block in self:
                     block.rect.y += constants.CRATE_LEN
             else:
-                self.spawn()
+                self.spawn(False)
 
     def fall(self):
         if time() - self.lastFallTime > 1.5 - (self.level * 0.1):
             if self.collision(0, constants.CRATE_LEN):
-                self.spawn()
+                self.spawn(False)
             else:
                 for block in self:
                     block.rect.y += constants.CRATE_LEN
@@ -129,7 +151,8 @@ class Player(Shape):
                 self.rotate(False if clockwise else True)
 
     def hold(self):
-        pass
+        if self.canHold:
+            self.spawn(True)
 
     def updateOnEvent(self, event: pygame.event.Event):
         if event.type == pygame.KEYDOWN:
