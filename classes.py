@@ -119,7 +119,6 @@ class Player(Shape):
 
             self.canHold = False
         
-    # little goofy
     def collision(self, offsetX: int, offsetY: int):
         for block in self:
             if block.rect.left + offsetX <= self.playArea.left or block.rect.right + offsetX >= self.playArea.right or block.rect.top + offsetY <= self.playArea.top or block.rect.bottom + offsetY >= self.playArea.bottom:
@@ -196,8 +195,29 @@ class Player(Shape):
                 block.rect.centerx = centerX + new_x
                 block.rect.centery = centerY + new_y
 
-            if self.collision(0, 0):
-                self.rotate(False if clockwise else True)
+            for block in self:
+                if block.rect.left <= self.playArea.left and self.collision(constants.CRATE_LEN, 0) is False:
+                    for b in self:
+                        b.rect.x += constants.CRATE_LEN
+                    break
+
+            for block in self:
+                if block.rect.right >= self.playArea.right and self.collision(-constants.CRATE_LEN, 0) is False:
+                    for b in self:
+                        b.rect.x -= constants.CRATE_LEN
+                    break
+            
+            for block in self:
+                if block.rect.top <= self.playArea.top and self.collision(0, constants.CRATE_LEN) is False:
+                    for b in self:
+                        b.rect.y += constants.CRATE_LEN
+                    break
+
+            for block in self:
+                if block.rect.bottom >= self.playArea.bottom and self.collision(0, -constants.CRATE_LEN) is False:
+                    for b in self:
+                        b.rect.y -= constants.CRATE_LEN
+                    break
 
     def hold(self):
         if self.canHold:
