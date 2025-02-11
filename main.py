@@ -1,5 +1,6 @@
 import pygame
 from sys import exit
+from time import time, ctime
 
 import constants
 import classes
@@ -66,6 +67,52 @@ def updateScores(player: classes.Player, ground: classes.Ground):
 
     return [[score_surf, score_rect], [level_surf, level_rect], [lines_surf, lines_rect]]
 
+def loadHighscore(filename: str):
+    highscores = {}
+
+    try:
+        with open(filename, 'r') as file:
+            for line in file:
+                score = line.split(" on ")
+
+                if len(score) != 2:
+                    continue
+
+                highscores[score[1]] = int(score[0])
+    except FileNotFoundError:
+        pass
+ 
+    return highscores 
+
+def saveHighscore(filename: str, score: int):
+    highscores = loadHighscore(filename)
+    highscores[f"{ctime()}"] = score
+    highscores_sorted = dict(sorted(list(highscores.items()), key=lambda item: int(item[1]), reverse=True))
+
+    with open(filename, 'w') as file:
+        i = 0
+        for key, value in highscores_sorted.items():
+            if i == 5:
+                break
+            
+            file.write(f"{value} on {key}\n")
+            i += 1
+
+def displayHighscore(filename: str, screen: pygame.Surface):
+    highscore = loadHighscore(filename)
+
+    surf = robotoMono.render("Highscores:", True, "White")
+    rect = surf.get_rect(center = (screen.get_rect().centerx, screen.get_rect().top + 300))
+    screen.blit(surf, rect)
+
+    i = 1
+    for key, value in highscore.items():
+        surf = robotoMono.render(f"{value} on {key}", True, "White")
+        rect = surf.get_rect(center = (screen.get_rect().centerx, screen.get_rect().top + (i * 50 + 300)))
+        i += 1
+
+        screen.blit(surf, rect)
+
 # game loop
 while True:
     for event in pygame.event.get():
@@ -73,11 +120,12 @@ while True:
             pygame.quit()
             exit()   
 
-        if gameOver is False and event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+        if gameOver == False and event.type == pygame.KEYDOWN and event.key == pygame.K_p:
             pause = True if pause == False else False
         
-        if player_group.updateOnEvent(event):
+        if gameOver == False and player_group.updateOnEvent(event):
             gameOver = True 
+            saveHighscore(constants.HIGHSCORES_FILENAME, player_group.score)
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
             pause = False
@@ -92,8 +140,14 @@ while True:
     
     if pause:
         screen.blit(pause_surf, pause_rect)
+
+        player_group.lastFallTime = time()
     elif gameOver:
         screen.blit(gameOver_surf, gameOver_rect)
+
+        displayHighscore(constants.HIGHSCORES_FILENAME, screen)
+
+        player_group.lastFallTime = time()
     else:
         scores = updateScores(player_group, ground_group)
 
@@ -121,6 +175,7 @@ while True:
         player_group.draw(screen)
         if player_group.update():
             gameOver = True
+            saveHighscore(constants.HIGHSCORES_FILENAME, player_group.score)
 
         ground_group.draw(screen)
 
