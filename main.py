@@ -105,13 +105,13 @@ def displayHighscore(filename: str, screen: pygame.Surface):
     highscore = loadHighscore(filename)
 
     surf = robotoMono.render("Highscores:", True, "White")
-    rect = surf.get_rect(center = (screen.get_rect().centerx, screen.get_rect().top + 300))
+    rect = surf.get_rect(center = (screen.get_rect().centerx, screen.get_rect().top + 400))
     screen.blit(surf, rect)
 
     i = 1
     for key, value in highscore.items():
         surf = robotoMono.render(f"{value} on {key}", True, "White")
-        rect = surf.get_rect(center = (screen.get_rect().centerx, screen.get_rect().top + (i * 50 + 300)))
+        rect = surf.get_rect(center = (screen.get_rect().centerx, screen.get_rect().top + (i * 50 + 400)))
         i += 1
 
         screen.blit(surf, rect)
