@@ -6,7 +6,7 @@ RobotoMono.ttf source: https://fonts.google.com/specimen/Roboto+Mono
 
 To do:
 - improve highscore functions
+- improve hold/nextShape rectangles
 
 - add description on GitHub
-- Improve graphics
 - add audio

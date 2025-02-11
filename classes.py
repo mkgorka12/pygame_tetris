@@ -8,10 +8,17 @@ import math
 class Block(pygame.sprite.Sprite):
     def __init__(self, coords: tuple[int, int], size: int, color = "Black"):
         super().__init__()
-        
-        self.image = pygame.surface.Surface((size, size)).convert()
-        self.image.fill(color=color)
-        
+
+        if size == constants.CRATE_LEN:
+            try:
+                self.image = pygame.image.load(f"graphics/{color}.png").convert()
+            except FileNotFoundError:
+                self.image = pygame.surface.Surface((size, size)).convert()
+                self.image.fill(color=color)
+        else:
+            self.image = pygame.surface.Surface((size, size)).convert()
+            self.image.fill(color=color)
+
         self.rect = self.image.get_rect(topleft = coords)
 
 class Shape(pygame.sprite.Group):

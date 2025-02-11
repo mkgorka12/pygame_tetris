@@ -3,9 +3,6 @@ SCREEN_HEIGHT = 800
 
 HIGHSCORES_FILENAME = "highscores.txt"
 
-PLAYAREA_WIDTH = 352
-PLAYAREA_HEIGHT = 702
-
 BACKCOLOUR = "#3b3b3b"
 
 CRATE_LEN = 35
@@ -15,7 +12,7 @@ ROWS = 20
 
 CAPTION = "mkgorka's Tetris"
 
-SHAPES = {"Yellow"  : [(0, 1), (1, 1), (1, 0), (0, 0)],
+SHAPES = {"Yellow"  : [(1, 1), (0, 1), (1, 0), (0, 0)],
           "Cyan"    : [(1, 0), (3, 0), (0, 0), (2, 0)],
           "Red"     : [(1, 1), (0, 1), (1, 0), (2, 0)],
           "Green"   : [(1, 1), (1, 0), (0, 0), (2, 1)],

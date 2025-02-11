@@ -22,8 +22,7 @@ pause_surf = pygame.image.load("graphics/pause.png").convert()
 pause_rect = screen.get_rect()
 
 # play area
-playArea_surf = pygame.surface.Surface((constants.PLAYAREA_WIDTH, constants.PLAYAREA_HEIGHT)).convert()
-playArea_surf.fill("Black")
+playArea_surf = pygame.image.load("graphics/grid.png").convert()
 playArea_rect = playArea_surf.get_rect(center = screen.get_rect().center)
 
 # ground
@@ -32,16 +31,20 @@ ground_group = classes.Ground(playArea_rect)
 # player
 player_group = classes.Player(playArea_rect, ground_group)
 
-# next shape
-nextShape_surf = pygame.surface.Surface((160, 160)).convert()
-nextShape_rect = nextShape_surf.get_rect(topleft = (playArea_rect.right + 30, playArea_rect.top + 1))
-
-# holded
-holded_surf = pygame.surface.Surface((160, 160)).convert()
-holded_rect = holded_surf.get_rect(topright = (playArea_rect.left - 30, playArea_rect.top + 1))
-
 # font
 robotoMono = pygame.font.Font("fonts/RobotoMono.ttf", 30)
+
+# next shape
+nextShape_surf = pygame.surface.Surface((180, 180)).convert()
+nextShape_rect = nextShape_surf.get_rect(topleft = (playArea_rect.right + 30, playArea_rect.top + 51))
+nextShapeFont_surf = robotoMono.render("Next:", True, "White")
+nextShapeFont_rect = nextShapeFont_surf.get_rect(centerx=nextShape_rect.centerx, top=nextShape_rect.top - 40)
+
+# holded
+holded_surf = pygame.surface.Surface((180, 180)).convert()
+holded_rect = holded_surf.get_rect(topright = (playArea_rect.left - 30, playArea_rect.top + 51))
+holdedFont_surf = robotoMono.render("Holded:", True, "White")
+holdedFont_rect = holdedFont_surf.get_rect(centerx=holded_rect.centerx, top=holded_rect.top - 40)
 
 # score
 score_surf = robotoMono.render("Score:", True, "White")
@@ -117,6 +120,7 @@ def displayHighscore(filename: str, screen: pygame.Surface):
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            saveHighscore(constants.HIGHSCORES_FILENAME, player_group.score)
             pygame.quit()
             exit()   
 
@@ -162,14 +166,16 @@ while True:
 
         screen.blit(lines_surf, lines_rect)
         screen.blit(scores[2][0], scores[2][1])
-        
+
+        screen.blit(nextShapeFont_surf, nextShapeFont_rect)        
         screen.blit(nextShape_surf, nextShape_rect)
-        nextShape = classes.Shape((nextShape_rect.left + 50, nextShape_rect.top + 60), size=20, shape=player_group.nextShape)
+        nextShape = classes.Shape((nextShape_rect.left + 30, nextShape_rect.top + 50), size=constants.CRATE_LEN, shape=player_group.nextShape)
         nextShape.draw(screen)
 
+        screen.blit(holdedFont_surf, holdedFont_rect)
         screen.blit(holded_surf, holded_rect)
         if player_group.holded != None:
-            holded = classes.Shape((holded_rect.left + 50, holded_rect.top + 60), size=20, shape=player_group.holded)
+            holded = classes.Shape((holded_rect.left + 30, holded_rect.top + 50), size=constants.CRATE_LEN, shape=player_group.holded)
             holded.draw(screen)
 
         player_group.draw(screen)
