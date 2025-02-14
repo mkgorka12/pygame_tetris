@@ -81,6 +81,15 @@ class Player(Shape):
         self.canHold = True
         self.holded = None
 
+        self.putSound = pygame.mixer.Sound("audio/put.mp3")
+        self.putSound.set_volume(0.5)
+
+        self.oneClearSound = pygame.mixer.Sound("audio/oneClear.mp3")
+        self.oneClearSound.set_volume(0.5)
+
+        self.fourClearSound = pygame.mixer.Sound("audio/fourClear.mp3")
+        self.fourClearSound.set_volume(0.5)
+
     def spawn(self, calledByHold: bool):
         if not calledByHold:
             for block in self:
@@ -99,12 +108,15 @@ class Player(Shape):
             lastLines = self.ground_group.lines
             self.ground_group.update()
 
-            if (self.ground_group.lines - lastLines) % 4 == 0 and self.ground_group.lines != 0:
+            if self.ground_group.lines - lastLines == 4:
                 self.score += 1000
-            elif (self.ground_group.lines - lastLines) != 0 and self.ground_group.lines != 0:
+                self.fourClearSound.play()
+            elif self.ground_group.lines - lastLines > 0:
                 self.score += (self.ground_group.lines - lastLines) * 250
+                self.oneClearSound.play()
             else:
                 self.score += 100
+                self.putSound.play()
 
             self.level = (self.score // 25000) + 1
         else:

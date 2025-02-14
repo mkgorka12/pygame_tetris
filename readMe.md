@@ -4,7 +4,6 @@ This project is my attempt to make some game using pygame. I've decided to code 
 
 ## Still few things to do:
 - improve hold/nextShape rectangles
-- add audio
 
 ## Setup
 
