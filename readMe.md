@@ -1,6 +1,6 @@
 ## Learning Pygame library by making Tetris
 
-This project is my attempt to make some game using pygame. I've decided to write Tetris because it's my favorite web game and it doesn't need much graphics to look good. Code isn't perfect and clean however it gets the job done and in free time I will try to upgrade it. I've tried my best to avoid magic numbers.
+This project is my attempt to make some game using pygame. I've decided to code Tetris, because it's my favorite web game and it doesn't need much graphics to look good. Code isn't perfect however it gets the job done and in free time I will try my best to upgrade it. Attention, few magic numbers appears!
 
 ## Still few things to do:
 - improve hold/nextShape rectangles
