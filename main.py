@@ -108,7 +108,7 @@ def displayHighscore(filename: str, screen: pygame.Surface):
 
     for idx, (key, value) in enumerate(highscore.items()):
         surf = robotoMono.render(f"{value} on {key}", True, "White")
-        rect = surf.get_rect(center = (screen.get_rect().centerx, screen.get_rect().top + (idx * 50 + 400)))
+        rect = surf.get_rect(center = (screen.get_rect().centerx, screen.get_rect().top + ((idx + 1) * 50) + 400))
         screen.blit(surf, rect)
 
 # game loop
