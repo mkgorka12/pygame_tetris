@@ -10,12 +10,12 @@ This project is my attempt to make some game using pygame. I've decided to write
 
 To run this game you need two things:
 1) Python 
-    Download it here: https://www.python.org/downloads/
+Download it here: https://www.python.org/downloads/
 2) Pygame library
-    Open your terminal and type:
-    ```
-    pip install pygame
-    ```
+Open your terminal and type:
+```
+pip install pygame
+```
 
 ## Sources
 
