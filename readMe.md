@@ -13,9 +13,9 @@ To run this game you need two things:
     Download it here: https://www.python.org/downloads/
 2) Pygame library
     Open your terminal and type:
-    '''
+    ```
     pip install pygame
-    '''
+    ```
 
 ## Sources
 
