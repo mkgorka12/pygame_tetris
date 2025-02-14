@@ -93,13 +93,11 @@ def saveHighscore(filename: str, score: int):
     highscores_sorted = dict(sorted(list(highscores.items()), key=lambda item: int(item[1]), reverse=True))
 
     with open(filename, 'w') as file:
-        i = 0
-        for key, value in highscores_sorted.items():
-            if i == 5:
+        for idx, (key, value) in enumerate(highscores_sorted.items()):
+            if idx == 5:
                 break
             
             file.write(f"{value} on {key}\n")
-            i += 1
 
 def displayHighscore(filename: str, screen: pygame.Surface):
     highscore = loadHighscore(filename)
@@ -108,12 +106,9 @@ def displayHighscore(filename: str, screen: pygame.Surface):
     rect = surf.get_rect(center = (screen.get_rect().centerx, screen.get_rect().top + 400))
     screen.blit(surf, rect)
 
-    i = 1
-    for key, value in highscore.items():
+    for idx, (key, value) in enumerate(highscore.items()):
         surf = robotoMono.render(f"{value} on {key}", True, "White")
-        rect = surf.get_rect(center = (screen.get_rect().centerx, screen.get_rect().top + (i * 50 + 400)))
-        i += 1
-
+        rect = surf.get_rect(center = (screen.get_rect().centerx, screen.get_rect().top + (idx * 50 + 400)))
         screen.blit(surf, rect)
 
 # game loop
